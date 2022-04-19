@@ -25,25 +25,28 @@ type bucketNode struct {
 	next       *bucketNode
 }
 
-// Put inserts a key and value into the HashTable array.
+// Put inserts a key and a value into the HashTable array.
 func (ht *HashTable) Put(key int, value int) {
 	index := hash(key)
 	ht.array[index].put(key, value)
 }
 
-// Get takes in a key and returns the value to which the specified key of the HashTable is mapped.
+/* Get takes in a key and returns a value to which
+ * the specified key of the HashTable is mapped. */
 func (ht *HashTable) Get(key int) int {
 	index := hash(key)
 	return ht.array[index].get(key)
 }
 
-// Remove takes in a key and removes it and its corresponding value from the HashTable.
+/* Remove takes in a key and removes it and it's
+ * corresponding value from the HashTable. */
 func (ht *HashTable) Remove(key int) {
 	index := hash(key)
 	ht.array[index].remove(key)
 }
 
-// put takes in a key and value, and inserts them into newly created node in the bucket.
+/* put takes in a key and a value, and inserts them into
+ * newly created node in the bucket. */
 func (b *bucket) put(k int, v int) {
 	currentNode := b.head
 	for currentNode != nil {
@@ -58,19 +61,8 @@ func (b *bucket) put(k int, v int) {
 	b.head = newNode
 }
 
-// search takes in a key and returns true if a bucket contains this key or false if not.
-// func (b *bucket) search(k int) bool {
-// 	currentNode := b.head
-// 	for currentNode != nil {
-// 		if currentNode.key == k {
-// 			return true
-// 		}
-// 		currentNode = currentNode.next
-// 	}
-// 	return false
-// }
-
-// get takes in a key and returns its corresponding value or -1 if this bucket contains no mapping for the key.
+/* get takes in a key and returns it's corresponding value
+ * or -1 if this bucket contains no mapping for the key. */
 func (b *bucket) get(k int) int {
 	currentNode := b.head
 	for currentNode != nil {
@@ -82,30 +74,34 @@ func (b *bucket) get(k int) int {
 	return -1
 }
 
-// remove takes in a key and removes a node, which contains this key and it's corresponding value, from the bucket.
+/* remove takes in a key and removes from the bucket a node,
+ * which contains this key and it's corresponding value. */
 func (b *bucket) remove(k int) {
-	// key is head of the bucket
-	if b.head.key == k {
-		b.head = b.head.next
-		return
-	}
-
-	previousNode := b.head
-	for previousNode.next != nil {
-		if previousNode.next.key == k {
-			// delete
-			previousNode.next = previousNode.next.next
+	if b.head != nil {
+		// key is head of the bucket
+		if b.head.key == k {
+			b.head = b.head.next
+			return
 		}
-		previousNode = previousNode.next
+
+		currentNode := b.head
+		for currentNode.next != nil {
+			if currentNode.next.key == k {
+				// delete
+				currentNode.next = currentNode.next.next
+				return
+			}
+			currentNode = currentNode.next
+		}
 	}
 }
 
-// hash is hash function
+// hash is hash function.
 func hash(key int) int {
 	return key % ArraySize
 }
 
-// Constructor creates a bucket in each slot of the hash map.
+// Constructor creates a bucket in each slot of the hash table.
 func Constructor() (result HashTable) {
 	for i := range result.array {
 		result.array[i] = new(bucket)
@@ -115,6 +111,7 @@ func Constructor() (result HashTable) {
 
 func main() {
 	obj := Constructor()
+	obj.Remove(2)
 	// hashMap.printData()
 	obj.Put(1, 1)
 	// hashMap.printData()
